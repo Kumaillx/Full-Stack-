@@ -71,3 +71,28 @@ const sum = (p1, p2) => {
   console.log(p2)
   return p1 + p2
 }
+
+///////////////// Object Methods and ""This"/////////////
+//Losing track of this when writing JavaScript code brings forth a few potential issues.
+// Bind >> This
+//There are no classes mechanism in Javascript like OOP in c++
+const arto = {
+  name: 'Arto Hellas',
+  age: 35,
+  education: 'PhD',
+  greet: function() {
+    console.log('hello, my name is ' + this.name)
+  },
+
+  doAddition: function(a, b) {
+    console.log(a + b)
+  },
+}
+
+arto.doAddition(1, 4)        // 5 is printed
+
+const referenceToAddition = arto.doAddition
+referenceToAddition(10, 15)   // 25 is printed
+
+//JavaScript essentially only defines the types Boolean, Null, Undefined, Number, String, Symbol, BigInt, and Object.
+// Hooks(feature of react) >> Classes
