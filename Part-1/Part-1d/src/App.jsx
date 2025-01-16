@@ -3,43 +3,52 @@ import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
 
+const History = (props) => {
+  if (props.allClicks.length === 0) {
+    return (
+      <div>
+        the app is used by pressing the buttons
+      </div>
+    )
+  }
+
+  return (
+    <div>
+      button press history: {props.allClicks.join(' ')}
+    </div>
+  )
+}
+
+
+const Button = ({ handleClick, text }) => (
+  <button onClick={handleClick}>
+    {text}
+  </button>
+)
+
 const App = () => {
   const [left, setLeft] = useState(0)
   const [right, setRight] = useState(0)
   const [allClicks, setAll] = useState([])
-//new total state that tells how many clicks we did
-  const [total, setTotal] = useState(0)
-
 
   const handleLeftClick = () => {
     setAll(allClicks.concat('L'))
-    
-    console.log('left before',left)
-    
-    const updatedLeft = left + 1
-    setLeft(updatedLeft)
-    
-    console.log('left after',left)
-    
-    setTotal(updatedLeft + right)
+    setLeft(left + 1)
   }
 
   const handleRightClick = () => {
-    setAll(allClicks.concat('R'));
-    const updatedRight = right + 1;
-    setRight(updatedRight);
-    setTotal(left + updatedRight);
-  };
+    setAll(allClicks.concat('R'))
+    setRight(right + 1)
+  }
 
   return (
     <div>
       {left}
-      <button onClick={handleLeftClick}>left</button>
-      <button onClick={handleRightClick}>right</button>
-      {right}
-      <p>{allClicks.join(' ')}</p>
 
-      <p>total {total}</p>
+      <Button handleClick={handleLeftClick} text='left' />
+      <Button handleClick={handleRightClick} text='right' />
+      {right}
+      <History allClicks={allClicks} />
     </div>
   )
 }
