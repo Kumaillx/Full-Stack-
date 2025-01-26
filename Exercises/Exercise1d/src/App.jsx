@@ -5,13 +5,20 @@ const Button = ({ onClick, text }) => {
   return <button onClick={onClick}>{text}</button>;
 };
 
-const StatisticLine = ({ text, value }) => {
-  return (
-    <div>
-      {text} {value}
-    </div>
+const StatisticLine = ({ text, value }) => (
+  <div>
+    <table>
+      <tbody>
+      <tr>
+        <td>{text}</td>
+        <td>{value}</td>
+       </tr>
+      </tbody>
+    </table>
+      
+  
+  </div>
   );
-};
 
 const Statistics = (props) => {
   if (props.good === 0 && props.neutral === 0 && props.bad === 0) {
