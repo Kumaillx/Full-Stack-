@@ -1,13 +1,5 @@
 /* eslint-disable react/prop-types */
-
-const Note = ({ note }) => {
-  return (
-    <li>
-      {note.content}
-    </li>
-  )
-}
-
+import Note from "./Note"
 
 const App = ({notes}) => {
   return (
