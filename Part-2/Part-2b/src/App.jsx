@@ -1,9 +1,23 @@
+//Forms
+//React Forms are the components 
+// used to collect and manage the user inputs.
+//user data , payments, handling authentications
+
+
 //states are built in objects
 import { useState } from 'react'
 import Note from './components/Note'
 
 const App = (props) => {
-  const [notes, setNotes] = useState([])
+  const [notes, setNotes] = useState(props.notes)
+//form
+  const addNote = (event) => {
+    //prevents the page to reload as default settings
+    event.preventDefault()
+    console.log('button clicked', event.target )
+
+  }
+
 
   return (
     <div>
@@ -13,6 +27,14 @@ const App = (props) => {
           <Note key={note.id} note={note} />
         )}
       </ul>
+
+        <form onSubmit={addNote}>
+          <input type="Add node" />
+          <button type='Submit'> save</button>
+        </form>
+
+
+
     </div>
   )
 }
