@@ -2,15 +2,30 @@
 //React Forms are the components 
 // used to collect and manage the user inputs.
 //user data , payments, handling authentications
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import axios from 'axios'
 import Note from './components/Notes'
 
-const App = (props) => {
-  const [notes, setNotes] = useState(props.notes)
+const App = () => {
+  const [notes, setNotes] = useState([])
   //controlled components
   const [newNote, setNewNote] = useState ('new note...')
   const [ShowAll, setShowAll] = useState (true)
 
+
+  const hook = () => {
+    console.log('effect')
+    axios
+      .get('http://localhost:3001/notes')
+      .then(response => {
+        console.log('promise fulfilled')
+        setNotes(response.data)
+      })
+  }
+  
+  useEffect(hook, [])
+  
+  console.log('render', notes.length,'notes')
 //const result = (5 > 3) ? "Yay" : "Boo";
 //condition is (5 > 3). This asks, “Is 5 bigger than 3?”
 // The answer is yes (true), because 5 is indeed bigger than 3.
