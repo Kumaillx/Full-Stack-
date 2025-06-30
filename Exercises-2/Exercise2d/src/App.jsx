@@ -12,26 +12,31 @@ const Filter = ({ filter, setFilter }) => {
 // PersonForm Component
 const PersonForm = ({ newName, setNewName, newNumber, setNewNumber, addPerson }) => {
   return (
-    <form onSubmit={addPerson}>
-      <div>
-        name: <input value={newName} onChange={(event) => setNewName(event.target.value)} />
-      </div>
-      <div>
-        number: <input value={newNumber} onChange={(event) => setNewNumber(event.target.value)} />
-      </div>
-      <div>
-        <button type="submit">add</button>
-      </div>
-    </form>
+    <div>
+      <form>
+        <div>
+          name: <input value={newName} onChange={(event) => setNewName(event.target.value)} />
+        </div>
+        <div>
+          number: <input value={newNumber} onChange={(event) => setNewNumber(event.target.value)} />
+        </div>
+        <div>
+          <button type="submit" onClick={addPerson}>add</button>
+        </div>
+      </form>
+    </div>
   )
 }
 
 // Persons Component
-const Persons = ({ personsToShow }) => {
+const Persons = ({ personsToShow, deletePerson }) => {
   return (
     <div>
       {personsToShow.map((person, index) => (
-        <div key={index}>{person.name} {person.number}</div>
+        <div key={index}>
+          {person.name} {person.number}
+          <button onClick={() => deletePerson(index)}>delete</button>
+        </div>
       ))}
     </div>
   )
@@ -65,6 +70,15 @@ const App = () => {
     setNewNumber('')
   }
 
+  // Handle deleting a person
+  const deletePerson = (index) => {
+    const personToDelete = persons[index]
+    if (window.confirm(`Delete ${personToDelete.name}?`)) {
+      const updatedPersons = persons.filter((_, i) => i !== index)
+      setPersons(updatedPersons)
+    }
+  }
+
   // Filter the persons list based on the filter input
   const personsToShow = filter
     ? persons.filter(person => person.name.toLowerCase().includes(filter.toLowerCase()))
@@ -88,7 +102,7 @@ const App = () => {
 
       <h3>Numbers</h3>
 
-      <Persons personsToShow={personsToShow} />
+      <Persons personsToShow={personsToShow} deletePerson={deletePerson} />
     </div>
   )
 }
