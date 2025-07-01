@@ -1,5 +1,5 @@
 import { useState } from 'react'
-
+import axios from 'axios';
 // Filter Component
 const Filter = ({ filter, setFilter }) => {
   return (
@@ -56,6 +56,11 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [filter, setFilter] = useState('')
 
+  //Used for HTTP Axios request
+  const [isLoading, setIsLoading] = useState(false)
+  const [error,setError] = useState(null)
+
+
   // Handle adding a new person
   const addPerson = (event) => {
     event.preventDefault()
@@ -75,15 +80,23 @@ const App = () => {
   }
 
   // Handle deleting a person
-  const deletePerson = (index) => 
-  {
-    const personToDelete = persons[index]
-    
-    if (window.confirm(`Delete ${personToDelete.name}?`)) 
-      {
-        const updatedPersons = persons.filter((_, i) => i !== index)
-        setPersons(updatedPersons)
+  const deletePerson = async (id) => {
+    const personToDelete = persons.find(person => person.id === id)
+    if (!personToDelete) return
+
+    if (window.confirm(`Delete ${personToDelete.name}?`)) {
+      setIsLoading(true)
+      setError(null)
+      try {
+        await axios.delete(`http://localhost:3001/persons/${id}`)
+        setPersons(persons.filter(person => person.id !== id))
+      } catch (err) {
+        setError('Failed to delete person. Please try again.')
+        console.error('Delete error:', err)
+      } finally {
+        setIsLoading(false)
       }
+    }
   }
 
   // Filter the persons list based on the filter input
