@@ -1,34 +1,66 @@
+
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import Notes from './components/Notes'
+
+
+const initialNotes = [
+  { id: 1, content: 'HTML is easy', important: true },
+  { id: 2, content: 'Browser can execute only Javascript', important: false },
+  { id: 3, content: 'GET and POST are the most important methods of HTTP protocol', important: true },
+  { id: 4, content: 'POST is used to add data to a REST api', important: false },
+  { id: 5, content: 'Network tab of devtools is most beneficial', important: true },
+  { id: 6, content: 'This note is not saved to server', important: true },
+]
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [notes, setNotes] = useState(initialNotes)
+  const [showAll, setShowAll] = useState(true)
+  const [newNote, setNewNote] = useState('')
+  const [errorMessage, setErrorMessage] = useState(null)
+
+  const notesToShow = showAll ? notes : notes.filter(note => note.important)
+
+  const toggleImportance = id => {
+    const note = notes.find(n => n.id === id)
+
+    if (note.content === "This note is not saved to server") {
+      setErrorMessage(`Note '${note.content}' was already removed from server`)
+      setTimeout(() => setErrorMessage(null), 4000)
+      return
+    }
+
+    const updatedNote = { ...note, important: !note.important }
+    setNotes(notes.map(n => (n.id !== id ? n : updatedNote)))
+  }
+
+  const addNote = e => {
+    e.preventDefault()
+    const noteObject = {
+      id: notes.length + 1,
+      content: newNote,
+      important: Math.random() > 0.5
+    }
+    setNotes(notes.concat(noteObject))
+    setNewNote('')
+  }
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <div>
+      <h1>Notes</h1>
+
+      {errorMessage && <div className="error">{errorMessage}</div>}
+
+      <button onClick={() => setShowAll(!showAll)}>
+        {showAll ? 'show important' : 'show all'}
+      </button>
+
+      <Notes notes={notesToShow} toggleImportance={toggleImportance} />
+
+      <form onSubmit={addNote}>
+        <input value={newNote} onChange={e => setNewNote(e.target.value)} />
+        <button type="submit">save</button>
+      </form>
+    </div>
   )
 }
 
