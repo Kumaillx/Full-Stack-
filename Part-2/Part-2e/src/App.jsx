@@ -1,7 +1,7 @@
 
 import { useState } from 'react'
 import Notes from './components/Notes'
-
+import Footer from './components/Footer'
 
 const initialNotes = [
   { id: 1, content: 'HTML is easy', important: true },
@@ -16,7 +16,7 @@ function App() {
   const [notes, setNotes] = useState(initialNotes)
   const [showAll, setShowAll] = useState(true)
   const [newNote, setNewNote] = useState('')
-  const [errorMessage, setErrorMessage] = useState(null)
+  const [errorMessage, setErrorMessage] = useState('This Note is not saved to server\' was already removed from server')
 
   const notesToShow = showAll ? notes : notes.filter(note => note.important)
 
@@ -60,6 +60,7 @@ function App() {
         <input value={newNote} onChange={e => setNewNote(e.target.value)} />
         <button type="submit">save</button>
       </form>
+      <Footer/>
     </div>
   )
 }
