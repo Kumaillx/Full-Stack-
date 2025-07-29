@@ -4,7 +4,7 @@ const app = express()
 let notes = [
     {
         id: "1", // Changed to unique ID
-        content: "Browser can execute only JavaScript",
+        content: "Kela can execute only JavaScript",
         important: false
     },
     {
