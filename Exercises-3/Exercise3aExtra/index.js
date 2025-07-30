@@ -14,12 +14,12 @@ let persons = [
 ];
 
 // GET all persons
-app.get('/', (req, res) => {
+app.get('/api/persons', (req, res) => {
   res.json(persons);
 });
 
 // GET single person by ID
-app.get('/:id', (req, res) => {
+app.get('/api/persons/:id', (req, res) => {
   const id = req.params.id;
   const person = persons.find(p => p.id === id);
   if (person) {
@@ -30,7 +30,7 @@ app.get('/:id', (req, res) => {
 });
 
 // POST new person
-app.post('/', (req, res) => {
+app.post('/api/persons', (req, res) => {
   const body = req.body;
   if (!body.name || !body.number) {
     return res.status(400).json({ error: 'name or number missing' });
@@ -54,7 +54,7 @@ app.get('/info', (req, res) => {
   res.send(`Phonebook has info for ${count} people<br>${date}`);
 });
 
-const PORT = 3004;
+const PORT = 3001;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
