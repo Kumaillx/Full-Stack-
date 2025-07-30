@@ -1,35 +1,105 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState, useEffect } from 'react';
+import axios from 'axios';
+import Notes from './components/Notes';
 
-function App() {
-  const [count, setCount] = useState(0)
+// Component for the search input
+const Filter = ({ value, onChange }) => (
+  <div>
+    find countries: <input value={value} onChange={onChange} />
+  </div>
+);
+
+// Main App component
+const App = () => {
+  const [countries, setCountries] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCountry, setSelectedCountry] = useState(null);
+  const [weather, setWeather] = useState(null);
+
+  // Fetch all countries on mount
+  useEffect(() => {
+    axios
+      .get('https://studies.cs.helsinki.fi/restcountries/api/all')
+      .then((response) => {
+        setCountries(response.data);
+      })
+      .catch((error) => {
+        console.error('Error fetching countries:', error);
+      });
+  }, []);
+
+  // Fetch weather data when a single country is selected
+  useEffect(() => {
+    if (selectedCountry || filteredCountries.length === 1) {
+      const country = selectedCountry || filteredCountries[0];
+      const capital = country.capital?.[0];
+      if (capital) {
+        const apiKey = import.meta.env.VITE_SOME_KEY;
+        axios
+          .get(`https://api.openweathermap.org/data/2.5/weather?q=${capital}&appid=${apiKey}&units=metric`)
+          .then((response) => {
+            setWeather(response.data);
+          })
+          .catch((error) => {
+            console.error('Error fetching weather:', error);
+            setWeather(null);
+          });
+      }
+    } else {
+      setWeather(null);
+    }
+  }, [selectedCountry, countries, searchQuery]);
+
+  // Handle search input changes
+  const handleSearchChange = (event) => {
+    setSearchQuery(event.target.value);
+    setSelectedCountry(null); // Reset selected country when search changes
+  };
+
+  // Handle show button click
+  const handleShowCountry = (country) => {
+    setSelectedCountry(country);
+  };
+
+  // Filter countries based on search query (case-insensitive)
+  const filteredCountries = countries.filter((country) =>
+    country.name.common.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  // Render content based on number of matches
+  const renderContent = () => {
+    if (searchQuery === '') {
+      return null;
+    }
+    if (filteredCountries.length > 10) {
+      return <p>Too many matches, specify another filter</p>;
+    }
+    if (filteredCountries.length > 1 && filteredCountries.length <= 10 && !selectedCountry) {
+      return (
+        <ul>
+          {filteredCountries.map((country) => (
+            <li key={country.cca3}>
+              {country.name.common}
+              <button onClick={() => handleShowCountry(country)}>show</button>
+            </li>
+          ))}
+        </ul>
+      );
+    }
+    if (filteredCountries.length === 1 || selectedCountry) {
+      const country = selectedCountry || filteredCountries[0];
+      return <Notes country={country} weather={weather} />;
+    }
+    return <p>No matches found</p>;
+  };
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+    <div>
+      <h2>Country Information</h2>
+      <Filter value={searchQuery} onChange={handleSearchChange} />
+      {renderContent()}
+    </div>
+  );
+};
 
-export default App
+export default App;
