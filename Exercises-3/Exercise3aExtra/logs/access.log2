@@ -1,0 +1,4 @@
+GET /api/persons 304 - - 0.535 ms
+GET /api/persons 304 - - 0.425 ms
+GET /api/persons 304 - - 0.366 ms
+GET /api/persons 304 - - 0.730 ms

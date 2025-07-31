@@ -7,37 +7,44 @@ const app = express();
 // Middleware
 app.use(express.json()); // Essential for parsing JSON request bodies
 
-// LOGGING SETUP 
-
-// Ensure logs directory exists
+// logs directory exists
 const logDir = path.join(__dirname, 'logs');
-if (!fs.existsSync(logDir)) {
-    fs.mkdirSync(logDir);
+if (!fs.existsSync(logDir)) 
+    {
+fs.mkdirSync(logDir);
 }
 
-// 1. Setup for detailed request/response logging (YOUR CUSTOM LOGIC)
-const inMemoryDetailedLogs = []; // Stores detailed logs including req/res bodies
-const MAX_IN_MEMORY_DETAILED_LOGS = 50; // Limit the number of detailed logs in memory
+// Used to store detailed logs in an array this will involve res and req
+
+const inMemoryDetailedLogs = []; 
+//The max num of logs in the memory and log file are 50
+const MAX_IN_MEMORY_DETAILED_LOGS = 50; 
+
 
 const detailedLogFilePath = path.join(logDir, 'detailed_access.log'); // File for detailed logs
 
+
 // Function to write detailed logs to file
-const writeDetailedLogToFile = (logEntry) => {
+const writeDetailedLogToFile = (logEntry) => 
+{
     fs.appendFile(detailedLogFilePath, JSON.stringify(logEntry) + '\n', (err) => {
-        if (err) {
+        if (err) 
+        {
             console.error('Failed to write detailed log to file:', err);
         }
     });
 };
 
-// Custom Middleware for Detailed Logging after Response
+// Custom Middleware the Logging after Response
 app.use((req, res, next) => {
-    // Skip logging for the detailed-logs endpoint itself
-    if (req.originalUrl === '/detailed-logs') {
+    
+    if (req.originalUrl === '/detailed-logs')
+    {
         return next();
     }
 
     const requestStartTime = Date.now();
+    
     const requestDetails = {
         method: req.method,
         url: req.originalUrl,
